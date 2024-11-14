@@ -56,7 +56,7 @@ export default function ContactForm() {
     try {
       console.log("Envoi des données:", formData);
 
-      const response = await fetch("http://localhost:5000/api/contacts", {
+      const response = await fetch("https://mysiteweb2backend.onrender.com/api/contacts", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
