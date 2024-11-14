@@ -1,15 +1,15 @@
+import { Service } from "./types";
 import { Anchor } from "lucide-react";
 import Navbar from "./Navbar";
 import Hero from "./Hero";
 import ServiceCard from "./ServiceCard";
 import TestimonialCard from "./TestimonialCard";
 import ContactForm from "./ContactForm";
-import React from "react";
 
 export default function MainContent() {
-  const services = [
+  const services: Service[] = [
     {
-      icon: <Anchor className="w-6 h-6" />,
+      icon: Anchor,
       title: "Service 1",
       description: "Description du service 1",
     },
@@ -21,6 +21,7 @@ export default function MainContent() {
       name: "Client 1",
       role: "Rôle 1",
       content: "Témoignage 1",
+      image: "image1.jpg",
     },
     // ... autres témoignages
   ];
@@ -37,7 +38,7 @@ export default function MainContent() {
           {services.map((service, index) => (
             <ServiceCard
               key={index}
-              Icon={React.cloneElement(service.icon)}
+              Icon={service.icon}
               title={service.title}
               description={service.description}
             />
