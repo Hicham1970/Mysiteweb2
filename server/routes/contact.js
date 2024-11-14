@@ -5,7 +5,7 @@ import { validateContact } from '../validators/contact.js';
 const router = express.Router();
 
 
-router.post('/', async (req, res) => {
+router.post('https://mysiteweb2frontend.onrender.com', async (req, res) => {
   try {
     console.log('Received request body:', req.body);
     const validatedData = validateContact(req.body);
