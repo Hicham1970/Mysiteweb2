@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { validateForm } from "../utils/validation";
 import Notification from "./Notification";
+import axios from 'axios';
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({
@@ -69,25 +70,21 @@ export default function ContactForm() {
     setIsLoading(true);
 
     try {
-      console.log("Envoi des données:", formData);
+      // Préparer les données pour l'API Resend via votre backend
+      const emailPayload = {
+        // L'e-mail est envoyé au propriétaire du site. Remplacez par votre adresse.
+        to: "h.garoum@gmail.com",
+        subject: `Nouveau message de contact de ${formData.name}`,
+        html: `<p>De: ${formData.name} (${formData.email})</p><p>Message: ${formData.message}</p>`,
+      };
 
-      const response = await fetch("http://localhost:5000/api/contacts", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-        // credentials: "include", // Supprimer cette ligne si vous n'avez pas besoin de cookies
-      });
+      console.log("Envoi des données via axios:", emailPayload);
 
-      console.log("Statut de la réponse:", response.status);
+      // Utilisation d'axios pour envoyer les données à votre nouvelle route API
+      const response = await axios.post("http://localhost:5000/api/send-email", emailPayload);
 
-      const data = await response.json();
-      console.log("Données reçues:", data);
-
-      if (!response.ok) {
-        throw new Error(data.error || "Une erreur est survenue");
-      }
+      console.log("Statut de la réponse axios:", response.status);
+      console.log("Données reçues via axios:", response.data);
 
       setNotification({
         type: "success",
@@ -97,12 +94,17 @@ export default function ContactForm() {
       setErrors({});
     } catch (error) {
       console.error("Erreur complète:", error);
+      let errorMessage = "Erreur de connexion au serveur";
+      if (axios.isAxiosError(error) && error.response) {
+        // Le serveur a répondu avec un statut autre que 2xx
+        errorMessage = error.response.data.message || error.response.data.error || errorMessage;
+      } else if (error instanceof Error) {
+        // Autres erreurs JavaScript
+        errorMessage = `Erreur: ${error.message}`;
+      }
       setNotification({
         type: "error",
-        message:
-          error instanceof Error
-            ? `Erreur: ${error.message}`
-            : "Erreur de connexion au serveur",
+        message: errorMessage,
       });
     } finally {
       setIsLoading(false);
