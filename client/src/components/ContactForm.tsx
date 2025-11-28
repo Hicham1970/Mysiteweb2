@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { validateForm } from "../utils/validation";
 import Notification from "./Notification";
 
@@ -16,6 +16,21 @@ export default function ContactForm() {
     message: string;
     type: "success" | "error" | "info";
   } | null>(null);
+
+
+  // Ce hook gère la disparition automatique de la notification
+  useEffect(() => {
+    if (notification) {
+      const timer = setTimeout(() => {
+        setNotification(null);
+      }, 3000); // La notification disparaîtra après 3 secondes
+
+      // Nettoyer le minuteur si le composant est démonté ou si la notification change
+      return () => clearTimeout(timer);
+    }
+  }, [notification]); // Se déclenche à chaque fois que l'état `notification` change
+
+
 
   const validateField = (name: string, value: string) => {
     const validationFunction = validateForm[name as keyof typeof validateForm];
@@ -56,7 +71,7 @@ export default function ContactForm() {
     try {
       console.log("Envoi des données:", formData);
 
-      const response = await fetch("https://mysiteweb2backend.onrender.com/api/contacts", {
+      const response = await fetch("http://localhost:5000/api/contacts", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

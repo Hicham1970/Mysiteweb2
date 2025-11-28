@@ -1,4 +1,5 @@
 import express from 'express';
+import helmet from 'helmet';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
@@ -7,6 +8,7 @@ import { contactRouter } from './routes/contact.js';
 dotenv.config();
 
 const app = express();
+app.use(helmet());
 const PORT = process.env.PORT || 5000;
 const MONGODB_URI = process.env.MONGODB_URI;
 
